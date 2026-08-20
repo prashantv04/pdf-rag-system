@@ -38,7 +38,7 @@ rag-pdf-qa/
 │   └── llm.py
 │
 ├── data/
-│   └── 28_L_Chandra_Kumar_vs_Union_of_India_and_Ors_p3508-p3511.pdf
+│   └── # PDF not included
 │
 ├── .env
 ├── .env.example
@@ -126,12 +126,6 @@ Place PDF files inside:
 
 ```text
 data/
-```
-
-For the current assignment, the project uses:
-
-```text
-28_L_Chandra_Kumar_vs_Union_of_India_and_Ors_p3508-p3511.pdf
 ```
 
 The application can process multiple `.pdf` files placed in the `data` directory.
@@ -499,3 +493,10 @@ The goal of this project is to demonstrate a complete PDF-based Retrieval-Augmen
 **PDF → chunks → embeddings → vector database → retrieval → context → LLM → answer with sources**
 
 The system is designed to ground its answers in the supplied documents rather than relying on the model's general knowledge.
+
+## 18. MIT LICENSE
+
+```markdown
+The MIT License applies to the project source code and other original materials authored by the project contributors.
+Documents and other materials provided separately for the assignment, including files that may be placed in the `data/` directory, are not necessarily covered by the MIT License and may be subject to their respective copyright, license, and usage terms.
+Users are responsible for complying with the applicable terms for such materials.

@@ -73,6 +73,13 @@ def main():
     print("\n--- Sources ---")
     print(citations)
 
+# What did the Supreme Court say about tribunals?
+
+# What is the capital of France?
+
+# Are tribunals equal to High Courts?
+
+# What qualifications were emphasized for members of tribunals?
 
 if __name__ == "__main__":
     main()
