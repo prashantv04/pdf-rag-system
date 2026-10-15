@@ -2,7 +2,7 @@
 
 A production-ready Retrieval-Augmented Generation (RAG) web application that acts as an AI Legal Assistant. It answers complex legal questions from massive PDF documents (like Supreme Court judgments) using semantic search, Qdrant Cloud, embeddings, and OpenRouter LLMs.
 
-**🚀 Live App:** [https://sc-case-law-ai.streamlit.app](https://sc-case-law-ai.streamlit.app) *(Update this link if your Streamlit URL is different)*
+**🚀 Live App:** [https://sc-case-law-ai.streamlit.app](https://sc-case-law-ai.streamlit.app)
 
 ## ✨ Product Features
 
