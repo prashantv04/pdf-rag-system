@@ -1,14 +1,25 @@
+import os
+from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
+# Load variables from .env
+load_dotenv()
 
-QDRANT_URL = "http://localhost:6333"
+# Safely get variables, defaulting to localhost if not found
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
+
 COLLECTION_NAME = "documents"
 VECTOR_SIZE = 384
 
 
 def get_qdrant_client() -> QdrantClient:
-    return QdrantClient(url=QDRANT_URL)
+    return QdrantClient(
+        url=QDRANT_URL,
+        api_key=QDRANT_API_KEY,
+        timeout=60,
+    )
 
 
 def reset_collection(client: QdrantClient) -> None:
@@ -63,6 +74,7 @@ def insert_chunks(
     client: QdrantClient,
     chunks: list[dict],
     embeddings: list[list[float]],
+    batch_size: int = 250,
 ) -> None:
 
     if len(chunks) != len(embeddings):
@@ -70,6 +82,7 @@ def insert_chunks(
             "The number of chunks must match the number of embeddings."
         )
 
+    total = len(chunks)
     points = []
 
     for index, (chunk, embedding) in enumerate(
@@ -88,12 +101,18 @@ def insert_chunks(
             )
         )
 
-    client.upsert(
-        collection_name=COLLECTION_NAME,
-        points=points,
-    )
+    print(f"Uploading {total} chunks to Qdrant in batches of {batch_size}...")
 
-    print(f"Inserted {len(points)} chunks into Qdrant.")
+    # Upload in manageable chunks
+    for i in range(0, total, batch_size):
+        batch = points[i : i + batch_size]
+        client.upsert(
+            collection_name=COLLECTION_NAME,
+            points=batch,
+        )
+        print(f"Uploaded {min(i + batch_size, total)} / {total} chunks...")
+
+    print(f"Successfully inserted all {total} chunks into Qdrant.")
 
 
 def search(
