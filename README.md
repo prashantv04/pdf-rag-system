@@ -12,6 +12,7 @@ A production-ready Retrieval-Augmented Generation (RAG) web application that act
 - **Batched Ingestion Pipeline:** Safely processes and uploads thousands of embeddings (e.g., 13,000+ chunks) to the cloud in optimized batches to prevent timeouts.
 - **Anti-Hallucination Guardrails:** Refuses to answer questions if the information is not explicitly found in the retrieved legal text, using a strict similarity threshold (`0.45`).
 - **Exact Citations:** Displays exact source documents and page numbers for complete legal traceability.
+- **In-App User Feedback Loop:** Native Google Forms integration in the sidebar to capture qualitative user feedback, track hallucination rates, and drive continuous product iteration.
 
 ## 🛠️ Tech Stack
 
