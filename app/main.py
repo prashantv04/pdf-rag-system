@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import streamlit.components.v1 as components
 
 # Add the project root to sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -86,6 +87,14 @@ def main():
 
         st.divider()
         st.caption("Built to demonstrate end-to-end RAG adoption.")
+
+    st.sidebar.markdown("---")
+    with st.sidebar.expander("📝 Share Feedback"):
+        components.iframe(
+            "https://docs.google.com/forms/d/e/1FAIpQLSclbOV9u3gidbl0SCIErr4cKYnlKoTC1_sx2SLplHQkeCUarQ/viewform?embedded=true",
+            height=550,
+            scrolling=True
+        )
 
     # --- Main Chat UI ---
     st.title("⚖️ AI Legal Assistant")

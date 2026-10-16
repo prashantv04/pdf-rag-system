@@ -21,11 +21,19 @@ def build_citations(results: list) -> str:
         page = result.payload["page"]
         text = result.payload["text"].strip()
 
-        # Keep the citation readable.
+        # Clean up whitespace
         snippet = " ".join(text.split())
 
+        # Smart Truncation: Stop at 400 chars, but don't cut words in half
         if len(snippet) > 400:
-            snippet = snippet[:400] + "..."
+            truncated = snippet[:400]
+            # Find the last space in the truncated string
+            last_space_index = truncated.rfind(" ")
+
+            if last_space_index != -1:
+                snippet = truncated[:last_space_index] + "..."
+            else:
+                snippet = truncated + "..."
 
         citation_parts.append(
             f"Source {index}\n"
