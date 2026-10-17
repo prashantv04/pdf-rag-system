@@ -27,46 +27,69 @@ client = OpenAI(
 )
 
 
-MODEL_NAME = "openrouter/free"
+# MODEL_NAME = "openrouter/free"
+MODEL_NAME = "google/gemma-4-26b-a4b-it:free"
 
 
 def generate_answer(
     question: str,
     context: str,
 ) -> str:
-
     prompt = f"""
-You are a question-answering assistant for a PDF document.
+    You are a question-answering assistant for a PDF document.
 
-You MUST answer the question using ONLY the provided context.
+    You MUST answer the question using ONLY the provided context.
 
-IMPORTANT RULES:
+    IMPORTANT RULES:
 
-- Answer ONLY from the provided DOCUMENT CONTEXT.
-- Every factual statement in your answer must be supported by the DOCUMENT CONTEXT.
-- Do not use outside knowledge, even if you know the answer.
-- Do not infer or assume facts that are not explicitly supported by the context.
-- Do not combine unrelated statements into a new conclusion.
-- If the context does not provide enough information to answer a part of the question, do not answer that part.
-- If the context does not support the answer at all, respond exactly:
-  The information is not available in the supplied documents.
-- Do not fabricate facts, dates, legal conclusions, case holdings, or procedural details.
-- Do not mention information that appears only in your general knowledge.
-- Keep the answer concise.
-- Use short paragraphs or bullet points when appropriate.
-- Do not include citations or source information in the answer.
-- The application handles sources separately.
-- Return only the final answer.
+    - Answer ONLY from the provided DOCUMENT CONTEXT.
 
-Before answering, check each factual statement against the supplied context.
-Remove any statement that is not supported by the context.
+    - Check the Opinion type (Majority, Dissenting, or Concurring) for each source in the DOCUMENT CONTEXT.
 
-DOCUMENT CONTEXT:
-{context}
+    - The 'Majority' opinion represents the binding legal ruling.
 
-USER QUESTION:
-{question}
-"""
+    - If any fact, viewpoint, or rationale comes from a 'Dissenting' or 'Concurring' opinion, you MUST explicitly identify it as such (e.g., "According to a dissenting opinion..." or "In a concurring judgment...").
+
+    - Never present a dissenting argument as the prevailing court holding or final rule of law.
+
+    - Every factual statement in your answer must be supported by the DOCUMENT CONTEXT.
+
+    - Do not use outside knowledge, even if you know the answer.
+
+    - Do not infer or assume facts that are not explicitly supported by the context.
+
+    - Do not combine unrelated statements into a new conclusion.
+
+    - If the context does not provide enough information to answer a part of the question, do not answer that part.
+
+    - If the context does not support the answer at all, respond exactly:
+
+      The information is not available in the supplied documents.
+
+    - Do not fabricate facts, dates, legal conclusions, case holdings, or procedural details.
+
+    - Do not mention information that appears only in your general knowledge.
+
+    - Keep the answer concise.
+
+    - Use short paragraphs or bullet points when appropriate.
+
+    - Do not include citations or source information in the answer.
+
+    - The application handles sources separately.
+
+    - Return only the final answer.
+
+
+    Before answering, check each factual statement against the supplied context.
+    Remove any statement that is not supported by the context.
+
+    DOCUMENT CONTEXT:
+    {context}
+
+    USER QUESTION:
+    {question}
+    """
     response = client.chat.completions.create(
         model=MODEL_NAME,
         messages=[

@@ -30,13 +30,15 @@ def chunk_text(
 
 
 def chunk_pages(
-    pages: list[dict],
-    document_name: str,
-    chunk_size: int = 1000,
-    overlap: int = 200,
+        pages: list[dict],
+        document_name: str,
+        chunk_size: int = 1000,
+        overlap: int = 200,
 ) -> list[dict]:
-
     chunks = []
+
+    # 1. State Machine Start: Default to Majority opinion
+    current_opinion = "Majority"
 
     for page in pages:
         page_chunks = chunk_text(
@@ -46,10 +48,46 @@ def chunk_pages(
         )
 
         for chunk in page_chunks:
+            # 2. Check the text to see if the opinion changed
+            text_lower = chunk.lower()
+            if "dissenting" in text_lower:
+                current_opinion = "Dissenting"
+            elif "concurring" in text_lower:
+                current_opinion = "Concurring"
+            elif "majority opinion" in text_lower:
+                current_opinion = "Majority"
+
+            # 3. Append the chunk with the new metadata tag
             chunks.append({
                 "document": document_name,
                 "page": page["page"],
                 "text": chunk,
+                "opinion_type": current_opinion,  # NEW: The sticky note!
             })
 
     return chunks
+
+# def chunk_pages(
+#     pages: list[dict],
+#     document_name: str,
+#     chunk_size: int = 1000,
+#     overlap: int = 200,
+# ) -> list[dict]:
+#
+#     chunks = []
+#
+#     for page in pages:
+#         page_chunks = chunk_text(
+#             page["text"],
+#             chunk_size=chunk_size,
+#             overlap=overlap,
+#         )
+#
+#         for chunk in page_chunks:
+#             chunks.append({
+#                 "document": document_name,
+#                 "page": page["page"],
+#                 "text": chunk,
+#             })
+#
+#     return chunks

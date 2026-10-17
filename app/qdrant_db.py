@@ -10,7 +10,7 @@ load_dotenv()
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 
-COLLECTION_NAME = "documents"
+COLLECTION_NAME = "documents_v2"
 VECTOR_SIZE = 384
 
 

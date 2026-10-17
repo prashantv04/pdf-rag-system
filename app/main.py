@@ -45,7 +45,7 @@ def get_available_documents():
         # Scroll through the database to find all unique document names
         while True:
             records, offset = client.scroll(
-                collection_name="documents",
+                collection_name="documents_v2",
                 limit=1000,
                 offset=offset,
                 with_payload=["document"],
