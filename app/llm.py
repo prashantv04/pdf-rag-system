@@ -27,8 +27,8 @@ client = OpenAI(
 )
 
 
-# MODEL_NAME = "openrouter/free"
-MODEL_NAME = "google/gemma-4-26b-a4b-it:free"
+MODEL_NAME = "openrouter/free"
+# MODEL_NAME = "google/gemma-4-26b-a4b-it:free"
 
 
 def generate_answer(
