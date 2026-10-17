@@ -14,6 +14,14 @@ A production-ready Retrieval-Augmented Generation (RAG) web application that act
 - **Exact Citations:** Displays exact source documents and page numbers for complete legal traceability.
 - **In-App User Feedback Loop:** Native Google Forms integration in the sidebar to capture qualitative user feedback, track hallucination rates, and drive continuous product iteration.
 
+## 🚀 Highlighted Feature: Legal Opinion Tracking (Majority vs. Dissent)
+Standard semantic search is blind to legal hierarchy—it might retrieve a highly relevant paragraph from a **dissenting (losing)** judge and present it as binding law. 
+
+To solve this edge case for high-trust legal environments:
+* **State Machine Ingestion:** The `chunker.py` script actively parses document text for opinion shifts, tagging each chunk's metadata as `Majority`, `Dissenting`, or `Concurring` before it reaches the vector database.
+* **LLM Guardrails:** The system prompt forces the LLM to explicitly warn the user if it is citing a dissenting opinion.
+* **Source Transparency:** The UI displays the exact opinion type directly inside the citation block so lawyers can trust the output.
+
 ## 🛠️ Tech Stack
 
 - **Frontend/UI:** Streamlit
