@@ -66,28 +66,3 @@ def chunk_pages(
             })
 
     return chunks
-
-# def chunk_pages(
-#     pages: list[dict],
-#     document_name: str,
-#     chunk_size: int = 1000,
-#     overlap: int = 200,
-# ) -> list[dict]:
-#
-#     chunks = []
-#
-#     for page in pages:
-#         page_chunks = chunk_text(
-#             page["text"],
-#             chunk_size=chunk_size,
-#             overlap=overlap,
-#         )
-#
-#         for chunk in page_chunks:
-#             chunks.append({
-#                 "document": document_name,
-#                 "page": page["page"],
-#                 "text": chunk,
-#             })
-#
-#     return chunks
