@@ -13,6 +13,9 @@ A production-ready Retrieval-Augmented Generation (RAG) web application that act
 - **Anti-Hallucination Guardrails:** Refuses to answer questions if the information is not explicitly found in the retrieved legal text, using a strict similarity threshold (`0.45`).
 - **Exact Citations:** Displays exact source documents and page numbers for complete legal traceability.
 - **In-App User Feedback Loop:** Native Google Forms integration in the sidebar to capture qualitative user feedback, track hallucination rates, and drive continuous product iteration.
+- **Automated MLOps Evaluation:** Includes a custom `eval.py` pipeline to measure Retrieval Hit Rate and LLM Guardrail Pass Rate, ensuring the system safely refuses adversarial queries (100% pass rate).
+- **Zero-State UX Optimization:** Implemented Sidebar Prompt Starters to solve "Blank Canvas Syndrome," guiding non-legal users toward high-value semantic queries instantly.
+- **Optimized Database Fetching:** Optimized Qdrant payloads by fetching only document metadata (`with_vectors=False`), reducing memory overhead for the Streamlit UI.
 
 ## 🚀 Highlighted Feature: Legal Opinion Tracking (Majority vs. Dissent)
 Standard semantic search is blind to legal hierarchy—it might retrieve a highly relevant paragraph from a **dissenting (losing)** judge and present it as binding law. 
@@ -106,6 +109,17 @@ This project demonstrates the complete lifecycle of an AI product:
 1. **Discovery:** Identifying the pain point of reading 100+ page court judgments to find specific legal precedents.
 2. **Build:** Creating a robust, anti-hallucinating RAG backend with precise citations and strict relevance filtering (`0.45` threshold).
 3. **Adoption:** Moving from a local CLI tool to a cloud-hosted, user-friendly web application designed for non-technical end users (law students and professionals).
+
+## ⚡ Development Velocity & Architecture
+This project was built using **AI-Assisted Development** (LLMs for rapid prototyping, boilerplate generation, and debugging). 
+
+By leveraging AI tools to accelerate the coding process, I was able to focus my engineering time on high-level architectural decisions, including:
+* Designing a custom state-machine for legal metadata extraction.
+* Building a deterministic evaluation harness (`eval.py`).
+* Optimizing the vector database payloads for UI speed.
+* Prompt engineering strict, zero-hallucination legal guardrails.
+
+This approach reduced the time-to-production from days to hours while maintaining enterprise-grade code structure and rigorous evaluation standards.
 
 ## 📄 License
 The MIT License applies to the project source code. Documents placed in the `data/` directory are subject to their respective copyright and usage terms.
