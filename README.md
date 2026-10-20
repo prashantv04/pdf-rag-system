@@ -13,7 +13,7 @@ A production-ready Retrieval-Augmented Generation (RAG) web application that act
 - **Anti-Hallucination Guardrails:** Refuses to answer questions if the information is not explicitly found in the retrieved legal text, using a strict similarity threshold (`0.45`).
 - **Exact Citations:** Displays exact source documents and page numbers for complete legal traceability.
 - **In-App User Feedback Loop:** Native Google Forms integration in the sidebar to capture qualitative user feedback, track hallucination rates, and drive continuous product iteration.
-- **Automated MLOps Evaluation:** Includes a custom `eval.py` pipeline to measure Retrieval Hit Rate and LLM Guardrail Pass Rate, ensuring the system safely refuses adversarial queries (100% pass rate).
+- **Automated MLOps Evaluation:** Includes a custom `eval.py` pipeline to measure system performance, achieving a **100% Guardrail Pass Rate** against adversarial queries, and identifying semantic edge cases in legal retrieval for future tuning.
 - **Zero-State UX Optimization:** Implemented Sidebar Prompt Starters to solve "Blank Canvas Syndrome," guiding non-legal users toward high-value semantic queries instantly.
 - **Optimized Database Fetching:** Optimized Qdrant payloads by fetching only document metadata (`with_vectors=False`), reducing memory overhead for the Streamlit UI.
 
@@ -33,25 +33,26 @@ To solve this edge case for high-trust legal environments:
 - **LLM:** OpenRouter (`openrouter/free`)
 - **PDF Processing:** `pymupdf`
 
-## 📂 Project Structure
+## 📁 Project Structure
 
 ```text
 rag-pdf-qa/
 │
 ├── app/
-│   ├── main.py          # Streamlit web application & UI
+│   ├── main.py          # Streamlit web application & UI with Sidebar Prompt Starters
 │   ├── ingest.py        # Pipeline to process PDFs and push to Qdrant Cloud
-│   ├── qdrant_db.py     # Cloud connection & batched vector insertion
-│   ├── embeddings.py    # Embedding generation
+│   ├── qdrant_db.py     # Cloud connection & optimized batched vector queries
+│   ├── embeddings.py    # Local HuggingFace embedding models
 │   ├── pdf_reader.py    # PDF text extraction
-│   ├── chunker.py       # Text splitting logic
-│   ├── rag.py           # Context and citation builder
-│   └── llm.py           # OpenRouter LLM integration
+│   ├── chunker.py       # Text splitting & legal metadata extraction (Majority/Dissent)
+│   ├── rag.py           # RAG pipeline logic (context building, exact citations)
+│   └── llm.py           # OpenRouter LLM integration & strict legal guardrails
 │
 ├── data/                # Directory for local PDFs (Git ignored)
+├── eval.py              # Automated MLOps evaluation script for retrieval & guardrails
 ├── .env                 # API Keys and Cloud URLs
 ├── requirements.txt     # Linux-compatible dependencies
-└── README.md
+└── README.md            # Project documentation
 ```
 
 ## ⚙️ Local Setup & Installation
