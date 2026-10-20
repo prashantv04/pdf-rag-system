@@ -1,20 +1,16 @@
 import sys
 from pathlib import Path
-import streamlit.components.v1 as components
+import streamlit as st
 
 # Add the project root to sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-import streamlit as st
-
 from app.embeddings import EmbeddingModel
 from app.llm import generate_answer
 from app.rag import build_context, build_citations, deduplicate_results
 from app.qdrant_db import get_qdrant_client, search
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 RELEVANCE_THRESHOLD = 0.45
 RETRIEVAL_LIMIT = 5
@@ -45,7 +41,7 @@ def get_available_documents():
         # Scroll through the database to find all unique document names
         while True:
             records, offset = client.scroll(
-                collection_name="documents_v2",
+                collection_name="documents_v2",  # Reading from the new database
                 limit=1000,
                 offset=offset,
                 with_payload=["document"],
@@ -56,13 +52,13 @@ def get_available_documents():
                 if record.payload and "document" in record.payload:
                     unique_docs.add(record.payload["document"])
 
-            # Stop if we have reached the end of the database
             if offset is None:
                 break
 
         return sorted(list(unique_docs))
     except Exception as e:
         return []
+
 
 def main():
     # --- Sidebar UI ---
@@ -73,27 +69,39 @@ def main():
             "Ask any question, and it will cite the exact page number."
         )
 
-        # Dynamically load and format the document names
         with st.spinner("Loading document list..."):
             available_pdfs = get_available_documents()
 
         if available_pdfs:
             for pdf in available_pdfs:
-                # Clean up the name for a better user experience
                 clean_name = pdf.replace(".pdf", "").replace("_", " ")
                 st.markdown(f"- *{clean_name}*")
         else:
             st.markdown("- *No documents found in the database.*")
 
+        st.markdown("---")
+
+        # --- PERMANENT PROMPT STARTERS ---
+        st.markdown("### 💡 Try Asking:")
+        sample_questions = [
+            "What did the Supreme Court say about tribunals?",
+            "What force does a tribunal's decision have?",
+            "Is the Speaker considered a tribunal?"
+        ]
+
+        for q in sample_questions:
+            if st.button(q, use_container_width=True):
+                st.session_state.preset_query = q
+                st.rerun()
+
         st.divider()
         st.caption("Built to demonstrate end-to-end RAG adoption.")
 
-    st.sidebar.markdown("---")
     with st.sidebar.expander("📝 Share Feedback"):
-        components.iframe(
+        # UPDATED: Fixed the iframe warning based on Streamlit's new syntax!
+        st.iframe(
             "https://docs.google.com/forms/d/e/1FAIpQLSclbOV9u3gidbl0SCIErr4cKYnlKoTC1_sx2SLplHQkeCUarQ/viewform?embedded=true",
-            height=550,
-            scrolling=True
+            height=550
         )
 
     # --- Main Chat UI ---
@@ -113,9 +121,15 @@ def main():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Accept user input
-    if query := st.chat_input("e.g., What did the Supreme Court say about tribunals?"):
+    # --- ACCEPT INPUT (From chat box OR button click) ---
+    query = st.chat_input("e.g., What did the Supreme Court say about tribunals?")
 
+    # Catch the button click from the sidebar
+    if st.session_state.get("preset_query"):
+        query = st.session_state.preset_query
+        st.session_state.preset_query = None  # Clear it instantly so it doesn't loop
+
+    if query:
         # Add user message to chat history and display it
         st.session_state.messages.append({"role": "user", "content": query})
         with st.chat_message("user"):
@@ -134,12 +148,6 @@ def main():
                 )
 
                 results = deduplicate_results(results)
-                # --- PRINT TO TERMINAL FOR DEBUGGING ---
-                # print(f"\n[DEBUG] User asked: {query}")
-                # print(f"[DEBUG] Retrieved {len(results)} relevant chunks from Qdrant.")
-                # for index, result in enumerate(results, start=1):
-                #     print(f"   -> Result {index}: page {result.payload.get('page', '?')} (score={result.score:.3f})")
-                # ---------------------------------------
 
             if not results:
                 response = "The information is not available in the supplied documents."
@@ -151,7 +159,6 @@ def main():
                 context = build_context(results)
                 answer = generate_answer(question=query, context=context)
 
-                # Check if the LLM refused to answer. If it did, don't show citations.
                 if "information is not available" in answer.lower():
                     final_response = answer
                 else:
